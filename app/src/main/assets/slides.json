@@ -1665,6 +1665,20 @@
         "src": "../media/image13.png",
         "on_top_of_video": false,
         "toggleable": true
+      },
+      {
+        "id": "300",
+        "name": "icon slide 7 col 6",
+        "x_emu": 9715500,
+        "y_emu": 3075305,
+        "cx_emu": 1946910,
+        "cy_emu": 692785,
+        "src": "../media/image13.png",
+        "loop": false,
+        "mute": false,
+        "on_top_of_video": false,
+        "hidden": false,
+        "toggleable": true
       }
     ],
     "videos": [],
@@ -3069,6 +3083,20 @@
         "id": "204",
         "name": "icon slide 7 col",
         "x_emu": 7994650,
+        "y_emu": 3075305,
+        "cx_emu": 1946910,
+        "cy_emu": 692785,
+        "src": "../media/image13.png",
+        "loop": false,
+        "mute": false,
+        "on_top_of_video": false,
+        "hidden": false,
+        "toggleable": true
+      },
+      {
+        "id": "310",
+        "name": "icon slide 8 col 6",
+        "x_emu": 9715500,
         "y_emu": 3075305,
         "cx_emu": 1946910,
         "cy_emu": 692785,
@@ -4491,6 +4519,20 @@
         "on_top_of_video": false,
         "hidden": false,
         "toggleable": true
+      },
+      {
+        "id": "320",
+        "name": "icon slide 9 col 6",
+        "x_emu": 9715500,
+        "y_emu": 3075305,
+        "cx_emu": 1946910,
+        "cy_emu": 692785,
+        "src": "../media/image13.png",
+        "loop": false,
+        "mute": false,
+        "on_top_of_video": false,
+        "hidden": false,
+        "toggleable": true
       }
     ],
     "videos": [],
@@ -5904,6 +5946,20 @@
         "on_top_of_video": false,
         "hidden": false,
         "toggleable": true
+      },
+      {
+        "id": "330",
+        "name": "icon slide 10 col 6",
+        "x_emu": 9715500,
+        "y_emu": 3075305,
+        "cx_emu": 1946910,
+        "cy_emu": 692785,
+        "src": "../media/image13.png",
+        "loop": false,
+        "mute": false,
+        "on_top_of_video": false,
+        "hidden": false,
+        "toggleable": true
       }
     ],
     "videos": [],
@@ -7308,6 +7364,20 @@
         "id": "234",
         "name": "icon slide 10 col",
         "x_emu": 7994650,
+        "y_emu": 3075305,
+        "cx_emu": 1946910,
+        "cy_emu": 692785,
+        "src": "../media/image13.png",
+        "loop": false,
+        "mute": false,
+        "on_top_of_video": false,
+        "hidden": false,
+        "toggleable": true
+      },
+      {
+        "id": "340",
+        "name": "icon slide 11 col 6",
+        "x_emu": 9715500,
         "y_emu": 3075305,
         "cx_emu": 1946910,
         "cy_emu": 692785,
