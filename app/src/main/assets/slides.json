@@ -1603,7 +1603,8 @@
         "cx_px": 204.40000000000003,
         "cy_px": 72.73333333333333,
         "src": "../media/image13.png",
-        "on_top_of_video": false
+        "on_top_of_video": false,
+        "toggleable": true
       },
       {
         "id": "19",
@@ -1617,7 +1618,8 @@
         "cx_px": 204.40000000000003,
         "cy_px": 72.73333333333333,
         "src": "../media/image13.png",
-        "on_top_of_video": false
+        "on_top_of_video": false,
+        "toggleable": true
       },
       {
         "id": "20",
@@ -1631,7 +1633,8 @@
         "cx_px": 204.40000000000003,
         "cy_px": 72.73333333333333,
         "src": "../media/image13.png",
-        "on_top_of_video": false
+        "on_top_of_video": false,
+        "toggleable": true
       },
       {
         "id": "21",
@@ -1645,7 +1648,8 @@
         "cx_px": 204.40000000000003,
         "cy_px": 72.73333333333333,
         "src": "../media/image13.png",
-        "on_top_of_video": false
+        "on_top_of_video": false,
+        "toggleable": true
       },
       {
         "id": "22",
@@ -1659,7 +1663,8 @@
         "cx_px": 204.40000000000003,
         "cy_px": 72.73333333333333,
         "src": "../media/image13.png",
-        "on_top_of_video": false
+        "on_top_of_video": false,
+        "toggleable": true
       }
     ],
     "videos": [],

@@ -57,8 +57,14 @@ class MainActivity : AppCompatActivity() {
         slides = SlideData.loadAll(jsonText)
 
         slideView.listener = object : SlideView.Listener {
-            override fun onModeHintChanged(mode: Mode, focusedFieldIndex: Int, totalFields: Int) {
-                updateHint(mode, focusedFieldIndex, totalFields)
+            override fun onModeHintChanged(
+                mode: Mode,
+                focusedFieldIndex: Int,
+                totalFields: Int,
+                focusedIconIndex: Int,
+                totalIcons: Int,
+            ) {
+                updateHint(mode, focusedFieldIndex, totalFields, focusedIconIndex, totalIcons)
             }
             override fun onSlideDirty() {
                 // No-op; DataStore writes are synchronous.
@@ -71,7 +77,13 @@ class MainActivity : AppCompatActivity() {
         // Initial mode from settings
         mode = dataStore.defaultMode
         slideView.setMode(mode)
-        updateHint(mode, -1, slides.getOrNull(currentSlideIndex)?.textFields?.size ?: 0)
+        val firstSlide = slides.getOrNull(currentSlideIndex)
+        updateHint(
+            mode, -1,
+            firstSlide?.textFields?.size ?: 0,
+            -1,
+            firstSlide?.pictures?.size ?: 0,
+        )
         showSlide(currentSlideIndex)
 
         slideView.requestFocus()
@@ -86,7 +98,12 @@ class MainActivity : AppCompatActivity() {
         slideView.showSlide(slides[currentSlideIndex])
         slideInfo.text = "${currentSlideIndex + 1} / ${slides.size}"
         if (mode == Mode.PLAY) scheduleAutoAdvance()
-        updateHint(mode, 0, slides[currentSlideIndex].textFields.size)
+        updateHint(
+            mode, 0,
+            slides[currentSlideIndex].textFields.size,
+            -1,
+            slides[currentSlideIndex].pictures.size,
+        )
     }
 
     private fun scheduleAutoAdvance() {
@@ -104,14 +121,26 @@ class MainActivity : AppCompatActivity() {
         autoAdvanceRunnable = null
     }
 
-    private fun updateHint(mode: Mode, focusedIndex: Int, total: Int) {
+    private fun updateHint(
+        mode: Mode,
+        focusedIndex: Int,
+        total: Int,
+        focusedIconIndex: Int,
+        totalIcons: Int,
+    ) {
         when (mode) {
             Mode.EDIT -> {
                 modeBadge.text = getString(R.string.mode_edit)
-                hintText.text = if (total > 0)
-                    "编辑模式 · 第 ${focusedIndex + 1}/$total 项 · OK编辑 · ←→换项 · ←/→ 翻页 · 菜单键切模式"
-                else
-                    "编辑模式 · 本页无文字 · ←/→ 翻页 · 菜单键切模式"
+                hintText.text = when {
+                    focusedIconIndex >= 0 -> {
+                        // On an icon: OK toggles visibility.
+                        val picCount = if (focusedIconIndex < totalIcons) focusedIconIndex + 1 else totalIcons
+                        "编辑模式 · 图标 ${picCount}/$totalIcons · OK切换显隐 · ↓下一个图标 · ↑回文字"
+                    }
+                    total > 0 -> "编辑模式 · 第 ${focusedIndex + 1}/$total 项 · OK编辑 · ←→换项 · ↓到图标 · ←/→ 翻页 · 菜单键切模式"
+                    totalIcons > 0 -> "编辑模式 · 图标 1/$totalIcons · OK切换显隐 · ←/→ 翻页 · 菜单键切模式"
+                    else -> "编辑模式 · 本页无内容 · ←/→ 翻页 · 菜单键切模式"
+                }
             }
             Mode.PLAY -> {
                 modeBadge.text = getString(R.string.mode_play)
@@ -152,7 +181,12 @@ class MainActivity : AppCompatActivity() {
         cancelAutoAdvance()
         mode = if (mode == Mode.EDIT) Mode.PLAY else Mode.EDIT
         slideView.setMode(mode)
-        updateHint(mode, 0, slides[currentSlideIndex].textFields.size)
+        updateHint(
+            mode, 0,
+            slides[currentSlideIndex].textFields.size,
+            -1,
+            slides[currentSlideIndex].pictures.size,
+        )
         if (mode == Mode.PLAY) {
             Toast.makeText(this, R.string.toast_playback_started, Toast.LENGTH_SHORT).show()
             scheduleAutoAdvance()

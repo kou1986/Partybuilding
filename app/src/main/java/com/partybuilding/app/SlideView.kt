@@ -5,19 +5,15 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.net.Uri
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -41,7 +37,13 @@ class SlideView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     interface Listener {
-        fun onModeHintChanged(mode: Mode, focusedFieldIndex: Int, totalFields: Int)
+        fun onModeHintChanged(
+            mode: Mode,
+            focusedFieldIndex: Int,
+            totalFields: Int,
+            focusedIconIndex: Int,
+            totalIcons: Int,
+        )
         fun onSlideDirty()
         fun onEditRequested(fieldIndex: Int, currentText: String, callback: (String) -> Unit)
     }
@@ -53,6 +55,14 @@ class SlideView @JvmOverloads constructor(
     private var slide: SlideData? = null
     private var mode: Mode = Mode.EDIT
     private var focusedFieldIndex: Int = -1
+    /** Index into the toggleable-only subset of [SlideData.pictures]. Mutually exclusive with [focusedFieldIndex]. */
+    private var focusedIconIndex: Int = -1
+
+    /** Indices of slides' pictures that are flagged as user-toggleable icons. */
+    private fun toggleableIconIndices(): List<Int> {
+        val s = slide ?: return emptyList()
+        return s.pictures.indices.filter { s.pictures[it].toggleable }
+    }
 
     // Background image (sized to canvas).
     private val bgPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
@@ -83,6 +93,13 @@ class SlideView @JvmOverloads constructor(
         style = Paint.Style.FILL
         color = Color.parseColor("#33000000")
     }
+    /** Dashed outline for picture/icon focus (so it doesn't look like a text field). */
+    private val focusIconBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 4f
+        color = Color.parseColor("#FFFFC000")
+        pathEffect = android.graphics.DashPathEffect(floatArrayOf(12f, 8f), 0f)
+    }
 
     // ---- constants -------------------------------------------------------
 
@@ -102,25 +119,46 @@ class SlideView @JvmOverloads constructor(
         this.mode = mode
         if (mode == Mode.PLAY) {
             focusedFieldIndex = -1
+            focusedIconIndex = -1
             hideEditOverlay()
             clearFocus()
         } else {
             requestFocus()
-            if (slide?.textFields?.isNotEmpty() == true && focusedFieldIndex < 0) {
-                focusedFieldIndex = 0
+            if (focusedFieldIndex < 0 && focusedIconIndex < 0) {
+                focusFirstEditable()
             }
         }
-        listener?.onModeHintChanged(mode, focusedFieldIndex, slide?.textFields?.size ?: 0)
+        notifyHint()
         invalidate()
     }
 
     fun showSlide(data: SlideData?) {
         slide = data
-        focusedFieldIndex = if (mode == Mode.EDIT && data?.textFields?.isNotEmpty() == true) 0 else -1
+        focusedFieldIndex = -1
+        focusedIconIndex = -1
+        if (mode == Mode.EDIT) focusFirstEditable()
         rebuildChildren()
         startVideoIfAny()
-        listener?.onModeHintChanged(mode, focusedFieldIndex, data?.textFields?.size ?: 0)
+        notifyHint()
         invalidate()
+    }
+
+    /** Pick the first focusable thing in this order: text field, then toggleable icon. */
+    private fun focusFirstEditable() {
+        val s = slide
+        focusedFieldIndex = if (s?.textFields?.isNotEmpty() == true) 0 else -1
+        focusedIconIndex = if (focusedFieldIndex < 0 && toggleableIconIndices().isNotEmpty()) 0 else -1
+    }
+
+    private fun notifyHint() {
+        val s = slide
+        listener?.onModeHintChanged(
+            mode,
+            focusedFieldIndex,
+            s?.textFields?.size ?: 0,
+            focusedIconIndex,
+            toggleableIconIndices().size,
+        )
     }
 
     fun clearVideoPlayback() {
@@ -240,8 +278,10 @@ class SlideView @JvmOverloads constructor(
     private fun drawPicturesUnderVideo(canvas: Canvas) {
         val s = slide ?: return
         val cw = canvasW(); val ch = canvasH()
+        val ds = DataStore(context)
         for (pic in s.pictures) {
             if (pic.onTopOfVideo) continue
+            if (pic.toggleable && ds.isIconHidden(s.slideNum, pic.id)) continue
             val d = SlideLoader.getImage(context, pic.src.removePrefix("../")) ?: continue
             val r = emuRectToView(pic.xEmu, pic.yEmu, pic.cxEmu, pic.cyEmu, cw, ch)
             // Use a callback draw so we don't mutate the cached drawable's bounds.
@@ -253,8 +293,10 @@ class SlideView @JvmOverloads constructor(
     private fun drawPicturesOverVideo(canvas: Canvas) {
         val s = slide ?: return
         val cw = canvasW(); val ch = canvasH()
+        val ds = DataStore(context)
         for (pic in s.pictures) {
             if (!pic.onTopOfVideo) continue
+            if (pic.toggleable && ds.isIconHidden(s.slideNum, pic.id)) continue
             val d = SlideLoader.getImage(context, pic.src.removePrefix("../")) ?: continue
             val r = emuRectToView(pic.xEmu, pic.yEmu, pic.cxEmu, pic.cyEmu, cw, ch)
             d.setBounds(r.left.toInt(), r.top.toInt(), r.right.toInt(), r.bottom.toInt())
@@ -265,11 +307,21 @@ class SlideView @JvmOverloads constructor(
     private fun drawFocusHighlight(canvas: Canvas) {
         if (mode != Mode.EDIT) return
         val s = slide ?: return
-        if (focusedFieldIndex < 0 || focusedFieldIndex >= s.textFields.size) return
-        val f = s.textFields[focusedFieldIndex]
-        val r = emuRectToView(f.xEmu, f.yEmu, f.cxEmu, f.cyEmu, canvasW(), canvasH())
-        canvas.drawRect(r, focusFillPaint)
-        canvas.drawRect(r, focusBorderPaint)
+        val cw = canvasW(); val ch = canvasH()
+        if (focusedFieldIndex >= 0 && focusedFieldIndex < s.textFields.size) {
+            val f = s.textFields[focusedFieldIndex]
+            val r = emuRectToView(f.xEmu, f.yEmu, f.cxEmu, f.cyEmu, cw, ch)
+            canvas.drawRect(r, focusFillPaint)
+            canvas.drawRect(r, focusBorderPaint)
+        } else if (focusedIconIndex >= 0) {
+            val icons = toggleableIconIndices()
+            val picIdx = icons.getOrNull(focusedIconIndex)
+            if (picIdx != null) {
+                val p = s.pictures[picIdx]
+                val r = emuRectToView(p.xEmu, p.yEmu, p.cxEmu, p.cyEmu, cw, ch)
+                canvas.drawRect(r, focusIconBorderPaint)
+            }
+        }
     }
 
     // ---- text drawing ----------------------------------------------------
@@ -395,18 +447,18 @@ class SlideView @JvmOverloads constructor(
             KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT,
             KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_PAGE_DOWN -> false
             KeyEvent.KEYCODE_DPAD_UP -> {
-                if (mode == Mode.EDIT) moveFocus(-numColumns()) else false
-                listener?.onModeHintChanged(mode, focusedFieldIndex, s?.textFields?.size ?: 0)
+                if (mode == Mode.EDIT) handleUp() else false
+                notifyHint()
                 true
             }
             KeyEvent.KEYCODE_DPAD_DOWN -> {
-                if (mode == Mode.EDIT) moveFocus(numColumns()) else false
-                listener?.onModeHintChanged(mode, focusedFieldIndex, s?.textFields?.size ?: 0)
+                if (mode == Mode.EDIT) handleDown() else false
+                notifyHint()
                 true
             }
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                 if (mode == Mode.EDIT) {
-                    openEditOverlay()
+                    if (focusedIconIndex >= 0) toggleFocusedIcon() else openEditOverlay()
                 }
                 true
             }
@@ -419,36 +471,125 @@ class SlideView @JvmOverloads constructor(
         }
     }
 
+    private fun handleUp() {
+        val s = slide ?: return
+        if (focusedIconIndex >= 0) {
+            val icons = toggleableIconIndices()
+            if (focusedIconIndex == 0) {
+                if (s.textFields.isNotEmpty()) {
+                    focusedIconIndex = -1
+                    focusedFieldIndex = s.textFields.size - 1
+                }
+            } else {
+                focusedIconIndex--
+            }
+        } else {
+            moveFocus(-numColumns())
+        }
+        invalidate()
+    }
+
+    private fun handleDown() {
+        val s = slide ?: return
+        if (focusedFieldIndex >= 0) {
+            val n = s.textFields.size
+            val next = focusedFieldIndex + numColumns()
+            val icons = toggleableIconIndices()
+            if (next >= n && icons.isNotEmpty()) {
+                // Drop into icon focus on the first toggleable icon.
+                focusedFieldIndex = -1
+                focusedIconIndex = 0
+            } else {
+                moveFocus(numColumns())
+            }
+        } else if (focusedIconIndex >= 0) {
+            // Cycle through icons (next, wrap).
+            val icons = toggleableIconIndices()
+            if (icons.isNotEmpty()) {
+                focusedIconIndex = (focusedIconIndex + 1) % icons.size
+            }
+        }
+        invalidate()
+    }
+
+    private fun toggleFocusedIcon() {
+        val s = slide ?: return
+        if (focusedIconIndex < 0) return
+        val icons = toggleableIconIndices()
+        if (focusedIconIndex >= icons.size) return
+        val pic = s.pictures[icons[focusedIconIndex]]
+        val ds = DataStore(context)
+        val nowHidden = !ds.isIconHidden(s.slideNum, pic.id)
+        ds.setIconHidden(s.slideNum, pic.id, nowHidden)
+        listener?.onSlideDirty()
+        invalidate()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (mode != Mode.EDIT) return false
         if (event.action != MotionEvent.ACTION_UP) return super.onTouchEvent(event)
         val s = slide ?: return false
-        val tapped = findFieldAt(event.x, event.y)
-        if (tapped >= 0) {
-            focusedFieldIndex = tapped
-            listener?.onModeHintChanged(mode, focusedFieldIndex, s.textFields.size)
-            openEditOverlay()
-            return true
+        val hit = findHitTarget(event.x, event.y)
+        when (hit) {
+            is HitTarget.Field -> {
+                focusedFieldIndex = hit.index
+                focusedIconIndex = -1
+                openEditOverlay()
+                notifyHint()
+                return true
+            }
+            is HitTarget.Icon -> {
+                focusedFieldIndex = -1
+                focusedIconIndex = hit.index
+                toggleFocusedIcon()
+                notifyHint()
+                return true
+            }
+            HitTarget.None -> return super.onTouchEvent(event)
         }
-        return super.onTouchEvent(event)
     }
 
-    private fun findFieldAt(x: Float, y: Float): Int {
-        val s = slide ?: return -1
+    private sealed class HitTarget {
+        data class Field(val index: Int) : HitTarget()
+        /** Index into the toggleable-only icon list. */
+        data class Icon(val index: Int) : HitTarget()
+        object None : HitTarget()
+    }
+
+    private fun findHitTarget(x: Float, y: Float): HitTarget {
+        val s = slide ?: return HitTarget.None
         val cw = canvasW(); val ch = canvasH()
         for ((i, f) in s.textFields.withIndex()) {
             val r = emuRectToView(f.xEmu, f.yEmu, f.cxEmu, f.cyEmu, cw, ch)
-            if (r.contains(x, y)) return i
+            if (r.contains(x, y)) return HitTarget.Field(i)
         }
-        return -1
+        val icons = toggleableIconIndices()
+        for ((idx, picIdx) in icons.withIndex()) {
+            val p = s.pictures[picIdx]
+            val r = emuRectToView(p.xEmu, p.yEmu, p.cxEmu, p.cyEmu, cw, ch)
+            if (r.contains(x, y)) return HitTarget.Icon(idx)
+        }
+        return HitTarget.None
+    }
+
+    private fun findFieldAt(x: Float, y: Float): Int {
+        return (findHitTarget(x, y) as? HitTarget.Field)?.index ?: -1
     }
 
     private fun moveFocus(delta: Int) {
         val s = slide ?: return
         val n = s.textFields.size
-        if (n == 0) return
-        focusedFieldIndex = ((focusedFieldIndex + delta) % n + n) % n
+        if (n == 0) {
+            // No text fields — drop into icons if any.
+            if (s.pictures.isNotEmpty()) {
+                focusedFieldIndex = -1
+                focusedIconIndex = 0
+            }
+            return
+        }
+        val base = if (focusedFieldIndex < 0) 0 else focusedFieldIndex
+        focusedFieldIndex = ((base + delta) % n + n) % n
         invalidate()
     }
 

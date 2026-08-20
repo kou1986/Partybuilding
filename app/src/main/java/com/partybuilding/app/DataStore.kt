@@ -20,9 +20,17 @@ class DataStore(context: Context) {
         prefs.edit().putString(key(slideNum, fieldId), value).apply()
     }
 
-    /** Drop every edited text, reverting slides to their PPTX defaults. */
+    /** True if the user has hidden this picture (icon toggle). Defaults to visible. */
+    fun isIconHidden(slideNum: Int, picId: String): Boolean =
+        prefs.getBoolean(iconKey(slideNum, picId), false)
+
+    fun setIconHidden(slideNum: Int, picId: String, hidden: Boolean) {
+        prefs.edit().putBoolean(iconKey(slideNum, picId), hidden).apply()
+    }
+
+    /** Drop every edited text and icon-hide flag, reverting slides to their PPTX defaults. */
     fun resetAllText() {
-        val toRemove = prefs.all.keys.filter { it.startsWith(TEXT_PREFIX) }
+        val toRemove = prefs.all.keys.filter { it.startsWith(TEXT_PREFIX) || it.startsWith(ICON_PREFIX) }
         if (toRemove.isEmpty()) return
         prefs.edit().also { e -> toRemove.forEach { e.remove(it) } }.apply()
     }
@@ -36,10 +44,12 @@ class DataStore(context: Context) {
         set(value) { prefs.edit().putString(KEY_DEFAULT_MODE, value.key).apply() }
 
     private fun key(slideNum: Int, fieldId: String) = "$TEXT_PREFIX$slideNum:$fieldId"
+    private fun iconKey(slideNum: Int, picId: String) = "$ICON_PREFIX$slideNum:$picId"
 
     companion object {
         private const val PREFS_NAME = "party_building_prefs"
         private const val TEXT_PREFIX = "text_"
+        private const val ICON_PREFIX = "icon_"
         private const val KEY_PAGE_INTERVAL = "page_interval"
         private const val KEY_DEFAULT_MODE = "default_mode"
         const val MIN_INTERVAL = 3

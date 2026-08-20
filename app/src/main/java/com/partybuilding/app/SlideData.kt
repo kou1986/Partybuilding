@@ -58,6 +58,10 @@ data class MediaItem(
     val mute: Boolean = false,
     /** True if this picture should be drawn on top of the video (z-order from PPT). */
     val onTopOfVideo: Boolean = false,
+    /** Editable toggle: true = picture is hidden. Overridden at runtime via DataStore. */
+    val hidden: Boolean = false,
+    /** True if this picture is a user-toggleable icon (党员先锋岗, etc.). */
+    val toggleable: Boolean = false,
 )
 
 data class SlideData(
@@ -107,6 +111,8 @@ data class SlideData(
                         loop = o.optBoolean("loop", false),
                         mute = o.optBoolean("mute", false),
                         onTopOfVideo = o.optBoolean("on_top_of_video", false),
+                        hidden = o.optBoolean("hidden", false),
+                        toggleable = o.optBoolean("toggleable", false),
                     )
                 )
             }
