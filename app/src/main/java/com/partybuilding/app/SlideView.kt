@@ -354,9 +354,16 @@ class SlideView @JvmOverloads constructor(
         val innerWidth = r.width() - insetL - insetR
         val innerHeight = r.height() - insetT - insetB
 
-        // Get paragraphs to render
-        val paragraphs = if (field.paragraphs.isNotEmpty()) field.paragraphs
-                         else listOf(Paragraph(align = field.align, text = field.defaultText, runs = field.runs))
+        // Replace the first run's text with the (possibly edited) DataStore value so
+        // edits in the editor actually show up. Other runs keep their JSON text.
+        val rawParagraphs = if (field.paragraphs.isNotEmpty()) field.paragraphs
+                            else listOf(Paragraph(align = field.align, text = field.defaultText, runs = field.runs))
+        val paragraphs = rawParagraphs.mapIndexed { pIdx, para ->
+            val newRuns = para.runs.mapIndexed { rIdx, run ->
+                if (pIdx == 0 && rIdx == 0) run.copy(text = text) else run
+            }
+            para.copy(text = text, runs = newRuns)
+        }
 
         // Pre-compute each paragraph's height (max run size)
         val paraMetrics = paragraphs.map { para ->

@@ -1027,6 +1027,170 @@
             "color": "#9F2117"
           }
         ]
+      },
+      {
+        "id": "400",
+        "name": "q3q4 400",
+        "x_emu": 8181974,
+        "y_emu": 3141345,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
+      },
+      {
+        "id": "401",
+        "name": "q3q4 401",
+        "x_emu": 8858250,
+        "y_emu": 3141345,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
+      },
+      {
+        "id": "402",
+        "name": "q3q4 402",
+        "x_emu": 8181974,
+        "y_emu": 4514850,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
+      },
+      {
+        "id": "403",
+        "name": "q3q4 403",
+        "x_emu": 8858250,
+        "y_emu": 4514850,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
       }
     ],
     "slide_num": 5
@@ -1570,6 +1734,170 @@
             "color": "#9F2117"
           }
         ]
+      },
+      {
+        "id": "410",
+        "name": "q3q4 410",
+        "x_emu": 8181974,
+        "y_emu": 3141345,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
+      },
+      {
+        "id": "411",
+        "name": "q3q4 411",
+        "x_emu": 8858250,
+        "y_emu": 3141345,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
+      },
+      {
+        "id": "412",
+        "name": "q3q4 412",
+        "x_emu": 8181974,
+        "y_emu": 4514850,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
+      },
+      {
+        "id": "413",
+        "name": "q3q4 413",
+        "x_emu": 8858250,
+        "y_emu": 4514850,
+        "cx_emu": 472440,
+        "cy_emu": 301942,
+        "text": "",
+        "runs": [
+          {
+            "text": "",
+            "sz": null,
+            "bold": true,
+            "font": "微软雅黑",
+            "color": "#9F2117"
+          }
+        ],
+        "paragraphs": [
+          {
+            "align": "ctr",
+            "text": "",
+            "runs": [
+              {
+                "text": "",
+                "sz": 2300,
+                "bold": true,
+                "font": "微软雅黑",
+                "color": "#9F2117"
+              }
+            ]
+          }
+        ],
+        "anchor": "ctr",
+        "align": "ctr",
+        "insets": {
+          "l": 0,
+          "t": 0,
+          "r": 0,
+          "b": 0
+        }
       }
     ],
     "slide_num": 6
