@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.partybuilding.app.SlideView
+        android:id="@+id/slideView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true" />
+
+    <LinearLayout
+        android:id="@+id/modeBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        android:background="@drawable/mode_badge">
+
+        <TextView
+            android:id="@+id/modeBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:text="@string/mode_edit" />
+
+        <TextView
+            android:id="@+id/slideInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/accent"
+            android:textSize="16sp"
+            tools:text="3 / 19" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/hintText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:background="@drawable/mode_badge"
+        android:text="@string/toast_press_ok_to_edit" />
+
+</FrameLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SeekBarPreference
+        android:key="page_interval"
+        android:title="@string/pref_page_interval"
+        android:summary="@string/pref_page_interval_summary"
+        android:defaultValue="8"
+        android:max="60"
+        app:min="3"
+        app:seekBarIncrement="1"
+        app:showSeekBarValue="true" />
+
+    <ListPreference
+        android:key="default_mode"
+        android:title="@string/pref_default_mode"
+        android:entries="@array/mode_entries"
+        android:entryValues="@array/mode_values"
+        android:defaultValue="edit" />
+
+    <Preference
+        android:key="reset_data"
+        android:title="@string/pref_reset"
+        android:summary="@string/pref_reset_summary" />
+
+</PreferenceScreen>

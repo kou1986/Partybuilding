@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Android Studio
+.idea/
+*.iml
+local.properties
+captures/
+
+# APK
+*.apk
+*.aab
+
+# Keystore (NEVER commit)
+*.jks
+keystore.properties
+
+# OS
+.DS_Store
+Thumbs.db

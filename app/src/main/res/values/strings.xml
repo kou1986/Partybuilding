@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">党建评分展示</string>
+    <string name="settings_title">设置</string>
+    <string name="mode_edit">编辑模式</string>
+    <string name="mode_play">播放模式</string>
+    <string name="hint_input">请输入内容</string>
+    <string name="hint_save">保存</string>
+    <string name="hint_cancel">取消</string>
+    <string name="hint_delete">删除</string>
+    <string name="hint_prev">上一页</string>
+    <string name="hint_next">下一页</string>
+    <string name="hint_play">开始播放</string>
+    <string name="hint_pause">暂停播放</string>
+    <string name="hint_switch_mode">切换模式</string>
+    <string name="hint_open_settings">打开设置</string>
+    <string name="pref_page_interval">每页停留时间（秒）</string>
+    <string name="pref_page_interval_summary">默认值 8 秒，可设置 3-60 秒</string>
+    <string name="pref_default_mode">启动模式</string>
+    <string name="pref_default_mode_edit">编辑模式</string>
+    <string name="pref_default_mode_play">播放模式</string>
+    <string name="pref_reset">恢复默认数据</string>
+    <string name="pref_reset_summary">清除所有已编辑的内容</string>
+    <string name="msg_reset_done">已恢复默认数据</string>
+    <string name="toast_press_ok_to_edit">按 OK 键编辑文字，左右键翻页</string>
+    <string name="toast_playback_started">播放模式启动</string>
+    <string name="toast_edit_started">编辑模式启动</string>
+</resources>

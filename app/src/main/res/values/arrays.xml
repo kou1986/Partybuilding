@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="mode_entries">
+        <item>@string/pref_default_mode_edit</item>
+        <item>@string/pref_default_mode_play</item>
+    </string-array>
+    <string-array name="mode_values">
+        <item>edit</item>
+        <item>play</item>
+    </string-array>
+</resources>
